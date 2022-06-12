@@ -10,6 +10,7 @@ using namespace godot;
 
 void Example::_bind_methods()
 {
+	// TODO: Static https://github.com/godotengine/godot/issues/61963
 	ClassDB::bind_method(D_METHOD("hello_extension"), &Example::hello_extension);
 }
 

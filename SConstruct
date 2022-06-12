@@ -9,14 +9,14 @@ sources = Glob("src/*.cpp")
 
 if env["platform"] == "osx":
     library = env.SharedLibrary(
-        "bin/libgdexample.{}.{}.framework/libgdexample.{}.{}".format(
+        "addons/example/bin/libgdexample.{}.{}.framework/libgdexample.{}.{}".format(
             env["platform"], env["target"], env["platform"], env["target"]
         ),
         source=sources,
     )
 else:
     library = env.SharedLibrary(
-        "bin/libgdexample.{}.{}.{}{}".format(
+        "addons/example/bin/libgdexample.{}.{}.{}{}".format(
             env["platform"], env["target"], env["arch_suffix"], env["SHLIBSUFFIX"]
         ),
         source=sources,

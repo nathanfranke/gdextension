@@ -1,5 +1,5 @@
 # Binaries.
-bin/
+addons/example/bin/
 
 # Objects.
 *.os
@@ -11,3 +11,9 @@ bin/
 
 # MacOS
 .DS_Store/
+
+# Editors
+.vscode/
+
+# Godot 4+ specific ignores
+.godot/
