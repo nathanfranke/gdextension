@@ -1,5 +1,5 @@
 # Binaries.
-addons/example/bin/
+*.so
 
 # Objects.
 *.os
