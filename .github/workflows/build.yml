@@ -1,0 +1,106 @@
+name: 🛠️ Builds
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - identifier: linux
+            name: Linux
+            runner: ubuntu-18.04
+          - identifier: windows
+            name: Windows
+            runner: ubuntu-20.04
+          - identifier: android
+            name: Android
+            runner: ubuntu-20.04
+
+    steps:
+      - name: Get version name
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/*/}
+
+      - name: (Bionic) Change package sources and install base dependencies
+        if: ${{ matrix.runner == 'ubuntu-18.04' }}
+        shell: sh
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/*
+          sudo tee -a /etc/apt/sources.list << EOT
+          deb http://archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ bionic-security main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse
+          EOT
+          
+          sudo apt-get update
+          sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
+
+      - name: (Focal) Change package sources and install base dependencies
+        if: ${{ matrix.runner == 'ubuntu-20.04' }}
+        shell: sh
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/*
+          sudo tee -a /etc/apt/sources.list << EOT
+          deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+          deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+          EOT
+          
+          sudo apt-get update
+          sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
+
+      - name: (Windows) Install mingw64
+        if: ${{ matrix.identifier == 'windows' }}
+        shell: sh
+        run: |
+          sudo apt-get install mingw-w64
+          sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
+          sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+
+      - name: (Android) Setup Java 11
+        if: ${{ matrix.identifier == 'android' }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: (Android) Setup Android SDK
+        if: ${{ matrix.identifier == 'android' }}
+        uses: android-actions/setup-android@v2
+
+      - name: (Android) Install Android Tools
+        if: ${{ matrix.identifier == 'android' }}
+        shell: sh
+        run: |
+          "$ANDROID_SDK_ROOT"/cmdline-tools/latest/bin/sdkmanager --sdk_root="$ANDROID_SDK_ROOT" "platform-tools" "build-tools;30.0.3" "platforms;android-29" "cmdline-tools;latest" "cmake;3.10.2.4988404" "ndk;21.4.7075529"
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+
+      - name: Setup Scons
+        shell: bash
+        run: |
+          python -c "import sys; print(sys.version)"
+          python -m pip install scons
+          scons --version
+
+      - uses: actions/checkout@v2
+
+      - name: Compile Extension
+        shell: sh
+        run: |
+          scons target=release
+          scons target=debug
+          ls -l addons/example/bin/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: example_${{ steps.version.outputs.version }}
+          path: ${{ github.workspace }}/addons/
