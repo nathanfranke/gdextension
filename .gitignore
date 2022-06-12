@@ -1,0 +1,13 @@
+# Binaries.
+bin/
+
+# Objects.
+*.os
+
+# SConstruct
+.sconf_temp
+.sconsign.dblite
+*.pyc
+
+# MacOS
+.DS_Store/
