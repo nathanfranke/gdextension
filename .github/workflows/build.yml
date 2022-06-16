@@ -1,6 +1,7 @@
 name: 🛠️ Builds
 on:
   push:
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -11,96 +12,150 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - identifier: linux
-            name: Linux
+          - identifier: linux-debug
+            name: Linux Debug
             runner: ubuntu-18.04
-          - identifier: windows
-            name: Windows
+            target: debug
+            platform: linux
+            arch: x86_64
+          - identifier: linux-release
+            name: Linux Release
+            runner: ubuntu-18.04
+            target: release
+            platform: linux
+            arch: x86_64
+          - identifier: windows-debug
+            name: Windows Debug
             runner: ubuntu-20.04
-          - identifier: android
-            name: Android
+            target: debug
+            platform: windows
+            arch: x86_64
+          - identifier: windows-release
+            name: Windows Release
             runner: ubuntu-20.04
+            target: release
+            platform: windows
+            arch: x86_64
+          - identifier: android-release
+            name: Android Release
+            runner: ubuntu-20.04
+            target: release
+            platform: android
+            arch: arm64
 
     steps:
-      - name: Get version name
-        id: version
-        run: echo ::set-output name=version::${GITHUB_REF#refs/*/}
+#      - name: (Bionic) Change package sources
+#        if: ${{ matrix.runner == 'ubuntu-18.04' }}
+#        shell: sh
+#        run: |
+#          sudo rm -f /etc/apt/sources.list.d/*
+#          sudo tee -a /etc/apt/sources.list << EOT
+#          deb http://archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse
+#          deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted universe multiverse
+#          deb http://archive.ubuntu.com/ubuntu/ bionic-security main restricted universe multiverse
+#          deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse
+#          EOT
+#          
+#          sudo apt-get update
 
-      - name: (Bionic) Change package sources and install base dependencies
-        if: ${{ matrix.runner == 'ubuntu-18.04' }}
-        shell: sh
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/*
-          sudo tee -a /etc/apt/sources.list << EOT
-          deb http://archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ bionic-security main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse
-          EOT
-          
-          sudo apt-get update
-          sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
-
-      - name: (Focal) Change package sources and install base dependencies
-        if: ${{ matrix.runner == 'ubuntu-20.04' }}
-        shell: sh
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/*
-          sudo tee -a /etc/apt/sources.list << EOT
-          deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
-          deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
-          EOT
-          
-          sudo apt-get update
-          sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev yasm
+#      - name: (Focal) Change package sources
+#        if: ${{ matrix.runner == 'ubuntu-20.04' }}
+#        shell: sh
+#        run: |
+#          sudo rm -f /etc/apt/sources.list.d/*
+#          sudo tee -a /etc/apt/sources.list << EOT
+#          deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+#          deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+#          deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+#          deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+#          EOT
+#          
+#          sudo apt-get update
 
       - name: (Windows) Install mingw64
-        if: ${{ matrix.identifier == 'windows' }}
+        if: ${{ startsWith(matrix.identifier, 'windows-') }}
         shell: sh
         run: |
           sudo apt-get install mingw-w64
           sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
           sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
-      - name: (Android) Setup Java 11
-        if: ${{ matrix.identifier == 'android' }}
+      - name: (Android) Set up Java 11
+        if: ${{ startsWith(matrix.identifier, 'android-') }}
         uses: actions/setup-java@v1
         with:
           java-version: 11
 
-      - name: (Android) Setup Android SDK
-        if: ${{ matrix.identifier == 'android' }}
+      - name: (Android) Set up Android SDK
+        if: ${{ startsWith(matrix.identifier, 'android-') }}
         uses: android-actions/setup-android@v2
 
       - name: (Android) Install Android Tools
-        if: ${{ matrix.identifier == 'android' }}
+        if: ${{ startsWith(matrix.identifier, 'android-') }}
         shell: sh
         run: |
           "$ANDROID_SDK_ROOT"/cmdline-tools/latest/bin/sdkmanager --sdk_root="$ANDROID_SDK_ROOT" "platform-tools" "build-tools;30.0.3" "platforms;android-29" "cmdline-tools;latest" "cmake;3.10.2.4988404" "ndk;21.4.7075529"
 
-      - name: Setup Python
+          # TODO: Figure out why aarch64-linux-android-ar isn't already included.
+          wget 'https://github.com/urho3d/android-ndk/blob/5f984a348cdaab4c044922c7a154f48d183781bc/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-ar?raw=true' -O aarch64-linux-android-ar
+          chmod +x aarch64-linux-android-ar
+          mv aarch64-linux-android-ar /usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/
+
+      - name: Set up Python
         uses: actions/setup-python@v2
 
-      - name: Setup Scons
+      - name: Set up SCons
         shell: bash
         run: |
           python -c "import sys; print(sys.version)"
           python -m pip install scons
           scons --version
 
-      - uses: actions/checkout@v2
+      - name: Checkout project
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
-      - name: Compile Extension
+#       TODO: Cache doesn't work yet. SCons rebuilds the objects even if they already exist. Could be caused by modification dates.
+#             fetch-depth: 0 May be needed for cache. See: <https://github.com/actions/checkout/issues/468>.
+#      - name: Set up SCons cache
+#        uses: actions/cache@v3
+#        with:
+#          path: |
+#            ${{ github.workspace }}/.scons-cache/
+#            ${{ github.workspace }}/**/.sconsign.dblite
+#            ${{ github.workspace }}/godot-cpp/gen/
+#          key: ${{ matrix.identifier }}-${{ github.ref }}-${{ github.sha }}
+#          restore-keys: |
+#            ${{ matrix.identifier }}-${{ github.ref }}-${{ github.sha }}
+#            ${{ matrix.identifier }}-${{ github.ref }}
+#            ${{ matrix.identifier }}
+
+      - name: Compile extension
         shell: sh
+#        env:
+#          SCONS_CACHE: '${{ github.workspace }}/.scons-cache/'
+#          SCONS_CACHE_LIMIT: 8192
         run: |
-          scons target=release
-          scons target=debug
+          scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' -j2
           ls -l addons/example/bin/
 
-      - name: Upload Artifact
+      - name: Copy extra files to addon
+        shell: sh
+        run: |
+          for addon in ${{ github.workspace }}/addons/*/; do
+            cp --no-clobber '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE' "$addon"
+          done
+
+      - name: Get version name
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/*/}
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: example_${{ steps.version.outputs.version }}
-          path: ${{ github.workspace }}/addons/
+          name: ${{ github.event.repository.name }}_${{ steps.version.outputs.version }}
+          path: |
+            ${{ github.workspace }}/addons/
+            # TODO: Remove extra file once https://github.com/actions/upload-artifact/issues/174 resolved.
+            ${{ github.workspace }}/project.godot
