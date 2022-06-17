@@ -1,6 +1,6 @@
 # gdextension
 
-Self-contained gdextension template for Godot Engine 4.x
+Self-contained gdextension template for Godot Engine 4+
 
 ### Getting started:
 1. Clone this repository (or a new repository with this template) with submodules.
@@ -8,7 +8,7 @@ Self-contained gdextension template for Godot Engine 4.x
       `cd gdextension`
 2. Build all libraries for the current platform.
     - `scons`
-3. Import, edit, and play `project/` using Godot Engine (4.x or later).
+3. Import, edit, and play `project/` using Godot Engine 4+.
 4. Check the output:
    ```
    Hello GDScript!
