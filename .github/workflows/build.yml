@@ -116,7 +116,7 @@ jobs:
         with:
           submodules: recursive
 
-#       TODO: Cache doesn't work yet. SCons rebuilds the objects even if they already exist. Could be caused by modification dates.
+#       TODO: Cache doesn't work yet. SCons rebuilds the objects even if they already exist. Could be caused by modification dates or extension_api.json.
 #             fetch-depth: 0 May be needed for cache. See: <https://github.com/actions/checkout/issues/468>.
 #      - name: Set up SCons cache
 #        uses: actions/cache@v3
