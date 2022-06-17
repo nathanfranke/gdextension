@@ -4,17 +4,25 @@
 
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/godot.hpp>
 
-#include "example.hpp"
+#include "my_node.hpp"
+#include "my_singleton.hpp"
 
 using namespace godot;
+
+static MySingleton *_my_singleton;
 
 void gdextension_initialize(ModuleInitializationLevel p_level)
 {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE)
 	{
-		ClassDB::register_class<Example>();
+		ClassDB::register_class<MyNode>();
+		ClassDB::register_class<MySingleton>();
+
+		_my_singleton = memnew(MySingleton);
+		Engine::get_singleton()->register_singleton("MySingleton", _my_singleton);
 	}
 }
 
@@ -22,6 +30,8 @@ void gdextension_terminate(ModuleInitializationLevel p_level)
 {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE)
 	{
+		Engine::get_singleton()->unregister_singleton("MySingleton");
+		memdelete(_my_singleton);
 	}
 }
 

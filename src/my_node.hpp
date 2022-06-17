@@ -8,16 +8,16 @@
 
 using namespace godot;
 
-class Example : public Node
+class MyNode : public Node
 {
-	GDCLASS(Example, Node);
+	GDCLASS(MyNode, Node);
 
 protected:
 	static void _bind_methods();
 
 public:
-	Example();
-	~Example();
+	MyNode();
+	~MyNode();
 
-	void hello_extension();
+	void hello_node();
 };

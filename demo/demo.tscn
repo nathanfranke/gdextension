@@ -4,3 +4,5 @@
 
 [node name="Demo" type="Node"]
 script = ExtResource( "1_6gvlp" )
+
+[node name="MyNode" type="MyNode" parent="."]
