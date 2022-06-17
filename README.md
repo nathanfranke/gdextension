@@ -1,6 +1,6 @@
 # gdextension
 
-Self-contained gdextension template for Godot Engine 4+
+GDExtension template that automatically builds into a self-contained addon for the Godot Asset Library.
 
 ### Getting started:
 1. Clone this repository (or a new repository with this template) with submodules.
@@ -17,7 +17,7 @@ Self-contained gdextension template for Godot Engine 4+
    ```
 
 ### Repository structure:
-- `project/` - Godot project template.
+- `project/` - Godot project boilerplate.
   - `addons/example/` - Files to be distributed to other projects.¹
   - `demo/` - Scenes and scripts for internal testing. Not strictly necessary.
 - `src/` - Source code of this extension.
@@ -27,12 +27,12 @@ Self-contained gdextension template for Godot Engine 4+
 
 ### Make it your own:
 1. Rename `project/addons/example/` and `project/addons/example/example.gdextension`.
-2. Replace `LICENSE` and `README.md`.
+2. Replace `LICENSE`, `README.md`, and your code in `src/`.
 3. Not required, but consider leaving a note about this template if you found it helpful.
 
 ### Distributing your extension on the Godot Asset Library:
-1. Go to Repository→Actions→Latest Action and download the artifact.
+1. Go to Repository→Actions and download the latest artifact.
 2. Test the artifact (it should be a working Godot project).
 3. Create a new release on GitHub, uploading the artifact as an asset.
-4. On the asset, Right Click→Copy Link to get a direct file URL.
-5. When submitting/updating on the Godot Asset Library, Change `Repository host` to `Custom` and `Download URL` to the one you copied.
+4. On the asset, Right Click→Copy Link to get a direct file URL. Don't use the artifacts directly from GitHub Actions, as they expire.
+5. When submitting/updating on the Godot Asset Library, Change "Repository host" to `Custom` and "Download URL" to the one you copied.
