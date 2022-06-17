@@ -22,7 +22,7 @@ void gdextension_initialize(ModuleInitializationLevel p_level)
 		ClassDB::register_class<MySingleton>();
 
 		_my_singleton = memnew(MySingleton);
-		Engine::get_singleton()->register_singleton("MySingleton", _my_singleton);
+		Engine::get_singleton()->register_singleton("MySingleton", MySingleton::get_singleton());
 	}
 }
 
