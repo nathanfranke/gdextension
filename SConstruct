@@ -7,7 +7,8 @@ env = SConscript("godot-cpp/SConstruct")
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
 
-(addon_path,) = glob("addons/*/")
+# Find correct addons path even if the directory is renamed.
+(addon_path,) = glob("project/addons/*/")
 
 scons_cache_path = os.environ.get("SCONS_CACHE")
 if scons_cache_path != None:

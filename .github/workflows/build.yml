@@ -138,12 +138,12 @@ jobs:
 #          SCONS_CACHE_LIMIT: 8192
         run: |
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' -j2
-          ls -l addons/example/bin/
+          ls -l project/addons/*/bin/
 
       - name: Copy extra files to addon
         shell: sh
         run: |
-          for addon in ${{ github.workspace }}/addons/*/; do
+          for addon in ${{ github.workspace }}/project/addons/*/; do
             cp --no-clobber '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE' "$addon"
           done
 
@@ -156,6 +156,4 @@ jobs:
         with:
           name: ${{ github.event.repository.name }}_${{ steps.version.outputs.version }}
           path: |
-            ${{ github.workspace }}/addons/
-            # TODO: Remove extra file once https://github.com/actions/upload-artifact/issues/174 resolved.
-            ${{ github.workspace }}/project.godot
+            ${{ github.workspace }}/project/
