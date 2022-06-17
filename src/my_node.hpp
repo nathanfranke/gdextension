@@ -15,5 +15,8 @@ public:
 	MyNode();
 	~MyNode();
 
+	void _ready() override;
+	void _process(double delta) override;
+
 	void hello_node();
 };

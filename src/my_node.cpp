@@ -18,6 +18,16 @@ MyNode::~MyNode()
 {
 }
 
+// Override built-in methods with your own logic. Make sure to declare them in the header as well!
+
+void MyNode::_ready()
+{
+}
+
+void MyNode::_process(double delta)
+{
+}
+
 void MyNode::hello_node()
 {
 	UtilityFunctions::print("Hello GDExtension Node!");
