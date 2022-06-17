@@ -20,5 +20,5 @@ MyNode::~MyNode()
 
 void MyNode::hello_node()
 {
-	UtilityFunctions::print("Hello Node!");
+	UtilityFunctions::print("Hello GDExtension Node!");
 }

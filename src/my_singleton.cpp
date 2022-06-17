@@ -31,5 +31,5 @@ MySingleton::~MySingleton()
 
 void MySingleton::hello_singleton()
 {
-	UtilityFunctions::print("Hello Singleton!");
+	UtilityFunctions::print("Hello GDExtension Singleton!");
 }
