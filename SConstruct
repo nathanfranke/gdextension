@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 from glob import glob
+from pathlib import Path
 
 # TODO: Do not copy environment after godot-cpp/test is updated <https://github.com/godotengine/godot-cpp/blob/master/test/SConstruct>.
 env = SConscript("godot-cpp/SConstruct")
@@ -8,8 +9,11 @@ env = SConscript("godot-cpp/SConstruct")
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
 
-# Find correct addons path even if the directory is renamed.
-(addon_path,) = glob("project/addons/*/")
+# Find correct addons path even if the directory or extension is renamed.
+(extension_path,) = glob("project/addons/*/*.gdextension")
+
+addon_path = Path(extension_path).parent
+extension_name = Path(extension_path).stem
 
 scons_cache_path = os.environ.get("SCONS_CACHE")
 if scons_cache_path != None:
@@ -18,10 +22,9 @@ if scons_cache_path != None:
 
 if env["platform"] == "osx":
     library = env.SharedLibrary(
-        "{}/bin/libgdextension.{}.{}.framework/libgdextension.{}.{}".format(
+        "{}/bin/lib{}.{}.{}.framework/{1}.{2}.{3}".format(
             addon_path,
-            env["platform"],
-            env["target"],
+            extension_name,
             env["platform"],
             env["target"],
         ),
@@ -29,8 +32,9 @@ if env["platform"] == "osx":
     )
 else:
     library = env.SharedLibrary(
-        "{}/bin/libgdextension.{}.{}.{}{}".format(
+        "{}/bin/lib{}.{}.{}.{}{}".format(
             addon_path,
+            extension_name,
             env["platform"],
             env["target"],
             env["arch_suffix"],
