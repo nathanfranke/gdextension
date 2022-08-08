@@ -96,11 +96,6 @@ jobs:
         run: |
           "$ANDROID_SDK_ROOT"/cmdline-tools/latest/bin/sdkmanager --sdk_root="$ANDROID_SDK_ROOT" "platform-tools" "build-tools;30.0.3" "platforms;android-29" "cmdline-tools;latest" "cmake;3.10.2.4988404" "ndk;21.4.7075529"
 
-          # TODO: Figure out why aarch64-linux-android-ar isn't already included.
-          wget 'https://github.com/urho3d/android-ndk/blob/5f984a348cdaab4c044922c7a154f48d183781bc/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/aarch64-linux-android-ar?raw=true' -O aarch64-linux-android-ar
-          chmod +x aarch64-linux-android-ar
-          mv aarch64-linux-android-ar /usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/
-
       - name: Set up Python
         uses: actions/setup-python@v2
 
