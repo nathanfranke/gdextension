@@ -27,9 +27,9 @@ extension_name = Path(extension_path).stem
 #     print("Scons cache enabled... (path: '" + scons_cache_path + "')")
 
 # Create the library target (e.g. libexample.linux.debug.x86_64.so).
-if env["platform"] == "osx":
+if env["platform"] == "macos":
     library = env.SharedLibrary(
-        "{}/bin/lib{}.{}.{}.framework/{1}.{2}.{3}".format(
+        "{0}/bin/lib{1}.{2}.{3}.framework/{1}.{2}.{3}".format(
             addon_path,
             extension_name,
             env["platform"],

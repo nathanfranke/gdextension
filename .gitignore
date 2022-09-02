@@ -1,6 +1,3 @@
-# Binaries.
-*.so
-
 # Objects.
 .scons-cache/
 *.os
@@ -11,7 +8,7 @@
 *.pyc
 
 # MacOS
-.DS_Store/
+.DS_Store
 
 # Editors
 .vscode/
