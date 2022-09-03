@@ -23,12 +23,12 @@ GDExtension template that automatically builds into a self-contained addon for t
 - `src/` - Source code of this extension.
 - `godot-cpp/` - Submodule needed for GDExtension compilation.
 
-¹ Before distributing as an addon, all platform binaries must be in the `bin/` directory. This is done automatically by GitHub Actions.
+¹ Before distributing as an addon, all binaries for all platforms must be built and copied to the `bin/` directory. This is done automatically by GitHub Actions.
 
 ### Make it your own:
-1. Rename `project/addons/example/` and `project/addons/example/example.gdextension`.
+1. Rename `project/addons/example/` and `project/addons/example/example.gdextension`. The library name is automatically changed to the gdextension file name.
 2. Replace `LICENSE`, `README.md`, and your code in `src/`.
-3. Not required, but consider leaving a note about this template if you found it helpful.
+3. Not required, but consider leaving a note about this template if you found it helpful!
 
 ### Distributing your extension on the Godot Asset Library:
 1. Go to Repository→Actions and download the latest artifact.
