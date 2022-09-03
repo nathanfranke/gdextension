@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 from glob import glob
 from pathlib import Path
 
@@ -10,15 +9,14 @@ env = SConscript("godot-cpp/SConstruct")
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
 
-# Find gdextension path even if the directory or extension is renamed.
-# Example: project/addons/example/example.gdextension
+# Find gdextension path even if the directory or extension is renamed (e.g. project/addons/example/example.gdextension).
 (extension_path,) = glob("project/addons/*/*.gdextension")
 
 # Find the addon path (e.g. project/addons/example).
 addon_path = Path(extension_path).parent
 
-# Find the extension name from the gdextension file (e.g. example).
-extension_name = Path(extension_path).stem
+# Find the project name from the gdextension file (e.g. example).
+project_name = Path(extension_path).stem
 
 # TODO: Cache is disabled currently.
 # scons_cache_path = os.environ.get("SCONS_CACHE")
@@ -31,7 +29,7 @@ if env["platform"] == "macos":
     library = env.SharedLibrary(
         "{0}/bin/lib{1}.{2}.{3}.framework/{1}.{2}.{3}".format(
             addon_path,
-            extension_name,
+            project_name,
             env["platform"],
             env["target"],
         ),
@@ -41,7 +39,7 @@ else:
     library = env.SharedLibrary(
         "{}/bin/lib{}.{}.{}.{}{}".format(
             addon_path,
-            extension_name,
+            project_name,
             env["platform"],
             env["target"],
             env["arch_suffix"],
