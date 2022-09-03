@@ -142,13 +142,9 @@ jobs:
             cp --no-clobber '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE' "$addon"
           done
 
-      - name: Get version name
-        id: version
-        run: echo ::set-output name=version::${GITHUB_REF#refs/*/}
-
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.event.repository.name }}_${{ steps.version.outputs.version }}
+          name: ${{ github.event.repository.name }}
           path: |
             ${{ github.workspace }}/project/
