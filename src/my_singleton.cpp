@@ -9,7 +9,7 @@ MySingleton *MySingleton::singleton = nullptr;
 
 void MySingleton::_bind_methods()
 {
-	ClassDB::bind_method(D_METHOD("hello_singleton"), &MySingleton::hello_singleton);
+	ClassDB::bind_method("hello_singleton", &MySingleton::hello_singleton);
 }
 
 MySingleton *MySingleton::get_singleton()

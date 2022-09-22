@@ -7,7 +7,7 @@ using namespace godot;
 
 void MyNode::_bind_methods()
 {
-	ClassDB::bind_method(D_METHOD("hello_node"), &MyNode::hello_node);
+	ClassDB::bind_method("hello_node", &MyNode::hello_node);
 }
 
 MyNode::MyNode()
