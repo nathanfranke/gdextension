@@ -44,34 +44,6 @@ jobs:
             arch: arm64
 
     steps:
-#      - name: (Bionic) Change package sources
-#        if: ${{ matrix.runner == 'ubuntu-18.04' }}
-#        shell: sh
-#        run: |
-#          sudo rm -f /etc/apt/sources.list.d/*
-#          sudo tee -a /etc/apt/sources.list << EOT
-#          deb http://archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse
-#          deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted universe multiverse
-#          deb http://archive.ubuntu.com/ubuntu/ bionic-security main restricted universe multiverse
-#          deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe multiverse
-#          EOT
-#          
-#          sudo apt-get update
-
-#      - name: (Focal) Change package sources
-#        if: ${{ matrix.runner == 'ubuntu-20.04' }}
-#        shell: sh
-#        run: |
-#          sudo rm -f /etc/apt/sources.list.d/*
-#          sudo tee -a /etc/apt/sources.list << EOT
-#          deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
-#          deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
-#          deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
-#          deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
-#          EOT
-#          
-#          sudo apt-get update
-
       - name: (Windows) Install mingw64
         if: ${{ startsWith(matrix.identifier, 'windows-') }}
         shell: sh
