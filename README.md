@@ -4,7 +4,7 @@ GDExtension template that automatically builds into a self-contained addon for t
 
 # Compatibility warning:
 
-Godot 4.0 is still in active development, so there will be frequent incompatibilities with previous versions. If you are encountering an issue, make sure the submodule `godot-cpp` is up-to-date by running the command `git submodule update --remote`.
+This template is only intended to work with the latest version of Godot `4.x` on GitHub, _not the latest point release, such as `beta1`_. Before reporting an issue, make sure you are on the latest `4.x` and the submodule `godot-cpp` is up-to-date by running the command `git submodule update --remote`.
 
 ### Getting started:
 1. Clone this repository (or a new repository with this template) with submodules.
