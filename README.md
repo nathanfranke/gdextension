@@ -2,17 +2,24 @@
 
 GDExtension template that automatically builds into a self-contained addon for the Godot Asset Library.
 
+<!-- TODO: Change `master` to `4.x` on release (or `4.0`).
+     TODO: Change `godot4` to `godot` on release -->
+
 # Compatibility warning:
 
-This template is only intended to work with the latest version of Godot `4.x` on GitHub, _not the latest point release, such as `beta1`_. Before reporting an issue, make sure you are on the latest `4.x` and the submodule `godot-cpp` is up-to-date by running the command `git submodule update --remote`.
+This template is only intended to work with the latest `master` on GitHub, _not the latest point release, such as `beta1`_. Before reporting an issue, make sure you are on the latest `master` and the submodule `godot-cpp` is up-to-date by running the command `git submodule update --remote`.
 
 ### Getting started:
 1. Clone this repository (or a new repository with this template) with submodules.
     - `git clone --recurse-submodules https://github.com/nathanfranke/gdextension.git` \
-      `cd gdextension`
-2. Build all libraries for the current platform.
+    - `cd gdextension`
+2. Build a debug binary for the current platform.
     - `scons`
 3. Import, edit, and play `project/` using Godot Engine 4+.
+    - Alternatively, run the project using the terminal.
+      - Either alias an existing executable to godot4: `alias godot4="~/workspace/godot/bin/godot.linuxbsd.tools.x86_64"`
+      - Or, on Arch Linux, install `godot4-bin` from the AUR (`yay -S aur/godot4-bin`).
+    - Finally, `godot4 --path project/`
 4. Check the output:
    ```
    Hello GDScript!
