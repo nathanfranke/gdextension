@@ -25,13 +25,14 @@ project_name = Path(extension_path).stem
 #     print("Scons cache enabled... (path: '" + scons_cache_path + "')")
 
 # Create the library target (e.g. libexample.linux.debug.x86_64.so).
+debug_or_release = "release" if env["target"] == "template_release" else "debug"
 if env["platform"] == "macos":
     library = env.SharedLibrary(
         "{0}/bin/lib{1}.{2}.{3}.framework/{1}.{2}.{3}".format(
             addon_path,
             project_name,
             env["platform"],
-            env["target"],
+            debug_or_release,
         ),
         source=sources,
     )
@@ -41,8 +42,8 @@ else:
             addon_path,
             project_name,
             env["platform"],
-            env["target"],
-            env["arch_suffix"],
+            debug_or_release,
+            env["arch"],
             env["SHLIBSUFFIX"],
         ),
         source=sources,
