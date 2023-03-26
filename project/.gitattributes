@@ -1,4 +1,4 @@
-# Ignore everything outside of the addons folder when exporting.
+# Ignore everything outside of the addons folder when exporting, including Godot Asset Library.
 /**        export-ignore
 /addons    !export-ignore
 /addons/** !export-ignore

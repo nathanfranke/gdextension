@@ -10,6 +10,6 @@ config_version=5
 
 [application]
 
-config/name="example"
-run/main_scene="res://demo/demo.tscn"
-config/features=PackedStringArray("4.0")
+config/name="project"
+run/main_scene="res://demo/scene.tscn"
+config/features=PackedStringArray("4.0", "Forward Plus")
