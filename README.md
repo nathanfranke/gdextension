@@ -4,17 +4,14 @@ GDExtension template that automatically builds into a self-contained addon for t
 
 ### Getting started:
 1. Clone this repository (or a new repository with this template) with submodules.
-    - `git clone --recurse-submodules https://github.com/nathanfranke/gdextension.git` \
+    - `git clone --recurse-submodules https://github.com/nathanfranke/gdextension.git`
     - `cd gdextension`
 2. Update to the latest `godot-cpp`.
     - `git submodule update --remote`
 2. Build a debug binary for the current platform.
     - `scons`
 3. Import, edit, and play `project/` using Godot Engine 4+.
-    - Alternatively, run the project using the terminal.
-      - Either alias an existing executable to godot4: `alias godot4="~/workspace/godot/bin/godot.linuxbsd.tools.x86_64"`
-      - Or, on Arch Linux, install `godot4-bin` from the AUR (`yay -S aur/godot4-bin`).
-    - Finally, `godot4 --path project/`
+    - `godot --path project/`
 4. Check the output:
    ```
    Hello GDScript!
