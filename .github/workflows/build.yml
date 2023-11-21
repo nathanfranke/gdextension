@@ -52,27 +52,35 @@ jobs:
           sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
           sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
-      - name: (Android) Set up JDK 17
+      - name: (Android) Install JDK 17
         if: ${{ startsWith(matrix.identifier, 'android-') }}
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: temurin
 
-      - name: (Android) Set up Android SDK
+      - name: (Android) Install Android SDK
         if: ${{ startsWith(matrix.identifier, 'android-') }}
         uses: android-actions/setup-android@v3
 
-      - name: (Android) Install Android Tools
-        if: ${{ startsWith(matrix.identifier, 'android-') }}
-        shell: sh
-        run: |
-          "$ANDROID_SDK_ROOT"/cmdline-tools/latest/bin/sdkmanager --sdk_root="$ANDROID_SDK_ROOT" "platform-tools" "build-tools;30.0.3" "platforms;android-29" "cmdline-tools;latest" "cmake;3.10.2.4988404" "ndk;21.4.7075529"
+      # From Godot docs, might not be necessary.
+      #- name: (Android) Install Android Tools
+      #  if: ${{ startsWith(matrix.identifier, 'android-') }}
+      #  shell: sh
+      #  run: |
+      #    "$ANDROID_SDK_ROOT"/cmdline-tools/latest/bin/sdkmanager --sdk_root="$ANDROID_SDK_ROOT" "platform-tools" "build-tools;30.0.3" "platforms;android-29" "cmdline-tools;latest" "cmake;3.10.2.4988404"
 
-      - name: Set up Python
+      - name: (Android) Install NDK r23c
+        if: ${{ matrix.platform == 'android' }}
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r23c
+          link-to-sdk: true
+
+      - name: Install Python
         uses: actions/setup-python@v2
 
-      - name: Set up SCons
+      - name: Install SCons
         shell: bash
         run: |
           python -c "import sys; print(sys.version)"
