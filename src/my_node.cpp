@@ -2,6 +2,7 @@
 
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <fmt/core.h>
 
 using namespace godot;
 
@@ -12,6 +13,7 @@ void MyNode::_bind_methods()
 
 MyNode::MyNode()
 {
+	fmt::print("MyNode created!\n");
 }
 
 MyNode::~MyNode()

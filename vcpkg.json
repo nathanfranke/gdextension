@@ -1,0 +1,15 @@
+{
+	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg-schema-definitions.schema.json",
+	"name": "gdexample",
+	"version-string": "1.0.0",
+	"dependencies": [
+		{
+			"name": "fmt",
+			"version>=": "11.0.2"
+		},
+		{
+			"name": "sqlite3",
+			"version>=": "3.46.1"
+		}
+	]
+}
