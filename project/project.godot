@@ -12,4 +12,4 @@ config_version=5
 
 config/name="project"
 run/main_scene="res://demo/scene.tscn"
-config/features=PackedStringArray("4.2", "Forward Plus")
+config/features=PackedStringArray("4.3", "Forward Plus")
