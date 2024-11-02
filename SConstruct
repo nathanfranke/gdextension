@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 from glob import glob
 from pathlib import Path
 
@@ -12,17 +13,16 @@ sources = Glob("src/*.cpp")
 # Find gdextension path even if the directory or extension is renamed (e.g. project/addons/example/example.gdextension).
 (extension_path,) = glob("project/addons/*/*.gdextension")
 
-# Find the addon path (e.g. project/addons/example).
+# Get the addon path (e.g. project/addons/example).
 addon_path = Path(extension_path).parent
 
-# Find the project name from the gdextension file (e.g. example).
+# Get the project name from the gdextension file (e.g. example).
 project_name = Path(extension_path).stem
 
-# TODO: Cache is disabled currently.
-# scons_cache_path = os.environ.get("SCONS_CACHE")
-# if scons_cache_path != None:
-#     CacheDir(scons_cache_path)
-#     print("Scons cache enabled... (path: '" + scons_cache_path + "')")
+scons_cache_path = os.environ.get("SCONS_CACHE")
+if scons_cache_path != None:
+    CacheDir(scons_cache_path)
+    print("Scons cache enabled... (path: '" + scons_cache_path + "')")
 
 # Create the library target (e.g. libexample.linux.debug.x86_64.so).
 debug_or_release = "release" if env["target"] == "template_release" else "debug"
