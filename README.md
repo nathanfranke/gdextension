@@ -44,8 +44,8 @@ GDExtension template that automatically builds into a self-contained addon for t
 
 ### Platform support
 
-| Status | Tested Godot Version | Platform |
-| ------ | -------------------- | -------- |
+| Status | Godot Version | Tested Platform |
+| ------ | ------------- | --------------- |
 | ✅ | 4.3 | Linux x86_64 (debug) |
 | ✅ | 4.3 | Linux x86_64 (release) |
 | ✅ | 4.3 | Windows x86_64 (debug) |
