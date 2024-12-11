@@ -1,7 +1,6 @@
 #include "my_singleton.hpp"
 
 #include <godot_cpp/core/class_db.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
 
@@ -9,7 +8,7 @@ MySingleton *MySingleton::singleton = nullptr;
 
 void MySingleton::_bind_methods()
 {
-	ClassDB::bind_method(D_METHOD("hello_singleton"), &MySingleton::hello_singleton);
+	ClassDB::bind_method(D_METHOD("hello_singleton", "label"), &MySingleton::hello_singleton);
 }
 
 MySingleton *MySingleton::get_singleton()
@@ -29,7 +28,7 @@ MySingleton::~MySingleton()
 	singleton = nullptr;
 }
 
-void MySingleton::hello_singleton()
+void MySingleton::hello_singleton(godot::Label *label)
 {
-	UtilityFunctions::print("Hello GDExtension Singleton!");
+	label->set_text(label->get_text() + "Hello GDExtension Singleton!\n");
 }

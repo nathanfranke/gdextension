@@ -6,3 +6,7 @@
 script = ExtResource("1_b04qc")
 
 [node name="MyNode" type="MyNode" parent="."]
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0

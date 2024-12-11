@@ -1,7 +1,7 @@
 #pragma once
 
 #include <godot_cpp/classes/object.hpp>
-#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/label.hpp>
 
 using namespace godot;
 
@@ -20,5 +20,5 @@ public:
 	MySingleton();
 	~MySingleton();
 
-	void hello_singleton();
+	void hello_singleton(godot::Label *label);
 };

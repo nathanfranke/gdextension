@@ -1,7 +1,6 @@
 #include "my_node.hpp"
 
 #include <godot_cpp/core/class_db.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
 
 using namespace godot;
 
@@ -28,7 +27,7 @@ void MyNode::_process(double delta)
 {
 }
 
-void MyNode::hello_node()
+godot::String MyNode::hello_node()
 {
-	UtilityFunctions::print("Hello GDExtension Node!");
+	return "Hello GDExtension Node\n";
 }

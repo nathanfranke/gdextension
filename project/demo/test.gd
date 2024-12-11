@@ -1,6 +1,8 @@
 extends Node
 
+@onready var label: Label = $Label
+
 func _ready() -> void:
-	print("Hello GDScript!")
-	$MyNode.hello_node()
-	MySingleton.hello_singleton()
+	label.text += "Hello GDScript!\n"
+	label.text += $MyNode.hello_node()
+	MySingleton.hello_singleton(label)
