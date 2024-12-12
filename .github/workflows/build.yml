@@ -48,7 +48,6 @@ jobs:
             target: template_release
             platform: android
             arch: arm64v8
-
     steps:
       - name: (Windows) Install mingw64
         if: ${{ startsWith(matrix.identifier, 'windows-') }}
@@ -57,48 +56,34 @@ jobs:
           sudo apt-get install mingw-w64
           sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
           sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
-
       - name: (Android) Install JDK 17
         if: ${{ startsWith(matrix.identifier, 'android-') }}
         uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: temurin
-
       - name: (Android) Install Android SDK
         if: ${{ startsWith(matrix.identifier, 'android-') }}
         uses: android-actions/setup-android@v3
-
-      # From Godot docs, might not be necessary.
-      #- name: (Android) Install Android Tools
-      #  if: ${{ startsWith(matrix.identifier, 'android-') }}
-      #  shell: sh
-      #  run: |
-      #    "$ANDROID_SDK_ROOT"/cmdline-tools/latest/bin/sdkmanager --sdk_root="$ANDROID_SDK_ROOT" "platform-tools" "build-tools;30.0.3" "platforms;android-29" "cmdline-tools;latest" "cmake;3.10.2.4988404"
-
       - name: (Android) Install NDK r23c
         if: ${{ matrix.platform == 'android' }}
         uses: nttld/setup-ndk@v1
         with:
           ndk-version: r23c
           link-to-sdk: true
-
       - name: Install Python
         uses: actions/setup-python@v2
-
       - name: Install SCons
         shell: bash
         run: |
           python -c "import sys; print(sys.version)"
           python -m pip install scons
           scons --version
-
       - name: Checkout project
         uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
-
       - name: Set up SCons cache
         uses: actions/cache@v3
         with:
@@ -111,39 +96,36 @@ jobs:
             ${{ matrix.identifier }}-${{ github.ref }}-${{ github.sha }}
             ${{ matrix.identifier }}-${{ github.ref }}-
             ${{ matrix.identifier }}-
-
       - name: Compile extension
-        shell: sh
+        shell: bash
         env:
           SCONS_CACHE: '${{ github.workspace }}/.scons-cache/'
           SCONS_CACHE_LIMIT: 4096
         run: |
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' -j2
           ls -l project/addons/*/bin/
-
+      # TODO: Workaround artifact folder structure: https://github.com/actions/upload-artifact/issues/174
       - name: Copy README.md and LICENSE to addon and make a new directory for artifacts
-        shell: sh
+        shell: bash
         run: |
           for addon in ${{ github.workspace }}/project/addons/*/; do
-            cp --no-clobber '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE' "$addon"
+            cp --update=none '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE' "$addon"
           done
-
-          # Works around https://github.com/actions/upload-artifact/issues/174
-          mkdir ${{ github.workspace }}/${{ github.event.repository.name }}/
-          mv ${{ github.workspace }}/project/addons/ ${{ github.workspace }}/${{ github.event.repository.name }}/
-
+          mkdir --parents ${{ github.workspace }}/github-artifact/${{ github.event.repository.name }}-${{ github.sha }}/
+          mv ${{ github.workspace }}/project/addons/ ${{ github.workspace }}/github-artifact/${{ github.event.repository.name }}-${{ github.sha }}/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.identifier }}
           path: |
-            ${{ github.workspace }}/${{ github.event.repository.name }}
+            ${{ github.workspace }}/github-artifact
   merge:
     runs-on: ubuntu-22.04
     needs: build
     steps:
+      # TODO: Simplify generating artifact names. See: https://github.com/orgs/community/discussions/26686
       - name: Merge artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: ${{ github.event.repository.name }}
+          name: ${{ github.event.repository.name }}-${{ github.event_name == 'pull_request' && format('pr{0}', github.event.number) || github.ref_name }}
           delete-merged: true
