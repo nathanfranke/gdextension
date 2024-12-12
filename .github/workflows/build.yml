@@ -104,12 +104,13 @@ jobs:
         run: |
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' -j2
           ls -l project/addons/*/bin/
+      # TODO: Replace '--no-clobber' with '--update=none' in ubuntu 24.04
       # TODO: Workaround artifact folder structure: https://github.com/actions/upload-artifact/issues/174
       - name: Copy README.md and LICENSE to addon and make a new directory for artifacts
         shell: bash
         run: |
           for addon in ${{ github.workspace }}/project/addons/*/; do
-            cp --update=none '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE' "$addon"
+            cp --no-clobber '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE' "$addon"
           done
           mkdir --parents ${{ github.workspace }}/github-artifact/${{ github.event.repository.name }}-${{ github.sha }}/
           mv ${{ github.workspace }}/project/addons/ ${{ github.workspace }}/github-artifact/${{ github.event.repository.name }}-${{ github.sha }}/
