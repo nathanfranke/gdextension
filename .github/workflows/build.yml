@@ -121,19 +121,23 @@ jobs:
           scons target='${{ matrix.target }}' platform='${{ matrix.platform }}' arch='${{ matrix.arch }}' -j2
           ls -l project/addons/*/bin/
 
-      - name: Copy extra files to addon
+      - name: Copy README.md and LICENSE to addon and make a new directory for artifacts
         shell: sh
         run: |
           for addon in ${{ github.workspace }}/project/addons/*/; do
             cp --no-clobber '${{ github.workspace }}/README.md' '${{ github.workspace }}/LICENSE' "$addon"
           done
 
+          # Works around https://github.com/actions/upload-artifact/issues/174
+          mkdir ${{ github.workspace }}/${{ github.event.repository.name }}/
+          mv ${{ github.workspace }}/project/addons/ ${{ github.workspace }}/${{ github.event.repository.name }}/
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.identifier }}
           path: |
-            ${{ github.workspace }}/project/
+            ${{ github.workspace }}/${{ github.event.repository.name }}
   merge:
     runs-on: ubuntu-22.04
     needs: build
