@@ -6,13 +6,15 @@ GDExtension template that automatically builds into a self-contained addon for t
 1. Clone this repository (or a new repository with this template) with submodules.
     - `git clone --recurse-submodules https://github.com/nathanfranke/gdextension.git`
     - `cd gdextension`
-    - Alternatively, `git submodule update --init --recursive`
+    - Alternatively, initialize submodules for an existing repository: `git submodule update --init --recursive`
 2. Update to the latest `godot-cpp`.
     - `git submodule update --remote`
 2. Build a debug binary for the current platform.
     - `scons`
-3. Import, edit, and play `project/` using Godot Engine 4+.
+3. Import and run the test project using Godot Engine 4.3+.
+    - `godot --path project/ --import`
     - `godot --path project/`
+    - Alternatively, use the editor: `godot --path project/ --editor`
 4. Check the Label on screen:
    ```
    Hello GDScript!
