@@ -4,7 +4,7 @@
 #include <godot_cpp/classes/engine.hpp>
 
 #include "my_node.hpp"
-#include "my_singleton.hpp"
+#include "utils/my_singleton.hpp"
 
 static MySingleton *_my_singleton;
 
