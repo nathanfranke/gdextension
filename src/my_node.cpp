@@ -40,8 +40,11 @@ void MyNode::_bind_methods()
 MyNode::MyNode()
 {
 	UtilityFunctions::print("Initiating Chuck...");
+
 	// instantiate a ChucK instance
+	// Uncommenting this next line is what seems to break the SharedLib
     // the_chuck = new ChucK();
+
 	UtilityFunctions::print("Chuck Initiated.");
 
 	// Redirect stderr
