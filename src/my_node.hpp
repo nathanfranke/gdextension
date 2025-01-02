@@ -1,6 +1,7 @@
 #pragma once
 
 #include <godot_cpp/classes/node.hpp>
+#include <chuck.h>
 
 using namespace godot;
 
@@ -19,4 +20,13 @@ public:
 	void _process(double delta) override;
 
 	godot::String hello_node();
+
+	// our ChucK instance
+	ChucK * the_chuck = NULL;
+	// audio input buffer
+	SAMPLE * g_inputBuffer = NULL;
+	// audio output buffer
+	SAMPLE * g_outputBuffer = NULL;
+	// our audio buffer size
+	t_CKINT g_bufferSize = 0;
 };
