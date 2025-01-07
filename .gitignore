@@ -12,3 +12,9 @@
 
 # Editors
 .vscode/
+
+# compiled files
+chuck.tab.c
+chuck.tab.h
+chuck.yy.c
+chuck.output

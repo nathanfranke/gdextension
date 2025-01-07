@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import subprocess
 from glob import glob
 from pathlib import Path
 
@@ -14,8 +15,44 @@ sources = Glob("src/*.cpp")
 env.Append(CPPPATH=["chuck/src/core/"])
 sources+= Glob("chuck/src/core/*.cpp")
 
+# Need c files in core as well as core/lo
+sources += Glob("chuck/src/core/*.c")
+
+# Exclude server_thread.c to get around 'No threading implementation available' compile error on Windows. Unsure for other platforms.
+# For some reason server_thread.c isn't included in the Visual Studio solution, so the error doesn't happen when building Chuck directly.
+sources += Glob("chuck/src/core/lo/*.c")
+
+# These external libraries are required for the Windows build.
+# env.Append(LIBS=["winmm","dsound","dinput8","dxguid","wsock32","ws2_32","iphlpapi","user32","advapi32"])
+
 env.Append(CXXFLAGS=['-fexceptions'])
 
+# Function to run bison
+def run_bison(target, source, env):
+    subprocess.run(['bison', '-dv', '-b', 'chuck', 'chuck/src/core/chuck.y'], check=True)
+
+# Function to run flex
+def run_flex(target, source, env):
+    subprocess.run(['flex', '-Ichuck/src/core', '-ochuck.yy.c', 'chuck/src/core/chuck.lex'], check=True)
+
+# Add custom builders for bison and flex
+bison_builder = Builder(action=run_bison)
+flex_builder = Builder(action=run_flex)
+
+env.Append(BUILDERS={'Bison': bison_builder, 'Flex': flex_builder})
+
+# Generate chuck.tab.h and chuck.tab.c using bison
+bison_output = env.Bison(target=['chuck.tab.c', 'chuck.tab.h'], source='chuck/src/core/chuck.y')
+
+# Generate chuck.yy.c using flex
+flex_output = env.Flex(target='chuck.yy.c', source='chuck/src/core/chuck.lex')
+env.Depends(flex_output, bison_output)
+
+# Add the generated files to the sources list
+sources += ['chuck.tab.c', 'chuck.yy.c']
+
+# Add the directory containing chuck.tab.h to the include path
+env.Append(CPPPATH=['.'])
 
 # Find gdextension path even if the directory or extension is renamed (e.g. project/addons/example/example.gdextension).
 (extension_path,) = glob("project/addons/*/*.gdextension")
