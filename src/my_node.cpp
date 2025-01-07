@@ -34,6 +34,11 @@ std::streambuf *original_stderr_buf = nullptr;
 
 void MyNode::_bind_methods()
 {
+    ClassDB::bind_method(D_METHOD("get_audio_stream_player"), &MyNode::get_audio_stream_player);
+	ClassDB::bind_method(D_METHOD("set_audio_stream_player", "p_audio_stream_player"), &MyNode::set_audio_stream_player);
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "AudioStreamPlayer", PROPERTY_HINT_NODE_TYPE, "AudioStreamPlayer"), "set_audio_stream_player", "get_audio_stream_player");
+
+
 	ClassDB::bind_method(D_METHOD("hello_node"), &MyNode::hello_node);
 };
 
@@ -173,3 +178,13 @@ void MyNode::cleanup_global_buffers()
     // reset
     g_bufferSize = 0;
 }
+
+// void MyNode::set_audio_stream_player(AudioStreamPlayer* p_audio_stream_player)
+// {
+//     audio_stream_player = p_audio_stream_player;
+// }
+
+// AudioStreamPlayer* MyNode::get_audio_stream_player()
+// {
+//     return audio_stream_player;
+// }

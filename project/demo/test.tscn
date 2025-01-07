@@ -5,8 +5,11 @@
 [node name="Test" type="Node"]
 script = ExtResource("1_b04qc")
 
-[node name="MyNode" type="MyNode" parent="."]
+[node name="MyNode" type="MyNode" parent="." node_paths=PackedStringArray("AudioStreamPlayer")]
+AudioStreamPlayer = NodePath("../AudioStreamPlayer")
 
 [node name="Label" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
