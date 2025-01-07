@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="ChuckFile" load_steps=2 format=3 uid="uid://bl26rdnfiq62v"]
+
+[ext_resource type="Script" path="res://addons/chuck_importer/chuck_file.gd" id="1_jroyc"]
+
+[resource]
+script = ExtResource("1_jroyc")
+contents = ""

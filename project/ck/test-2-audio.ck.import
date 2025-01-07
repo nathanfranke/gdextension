@@ -1,0 +1,14 @@
+[remap]
+
+importer="chodot.chuckfile"
+type="ChuckFile"
+uid="uid://dofhw3edqb5tf"
+path="res://.godot/imported/test-2-audio.ck-b74ec3a3d8694b4fc98ed8934f711154.tres"
+
+[deps]
+
+source_file="res://ck/test-2-audio.ck"
+dest_files=["res://.godot/imported/test-2-audio.ck-b74ec3a3d8694b4fc98ed8934f711154.tres"]
+
+[params]
+
