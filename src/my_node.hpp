@@ -29,4 +29,9 @@ public:
 	SAMPLE * g_outputBuffer = NULL;
 	// our audio buffer size
 	t_CKINT g_bufferSize = 0;
+
+	// allocate global audio buffers
+	void alloc_global_buffers( t_CKINT bufferSize );
+	// de-allocate global audio buffers
+	void cleanup_global_buffers();
 };
