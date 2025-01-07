@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7u64tpv6byvb"]
+[gd_scene load_steps=3 format=3 uid="uid://c7u64tpv6byvb"]
 
 [ext_resource type="Script" path="res://demo/test.gd" id="1_b04qc"]
+
+[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_fjwav"]
 
 [node name="Test" type="Node"]
 script = ExtResource("1_b04qc")
@@ -13,3 +15,4 @@ offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamGenerator_fjwav")
