@@ -41,7 +41,12 @@ void MyNode::_bind_methods()
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "AudioStreamPlayer", PROPERTY_HINT_NODE_TYPE, "AudioStreamPlayer"), "set_audio_stream_player", "get_audio_stream_player");
 
 	ClassDB::bind_method(D_METHOD("hello_node"), &MyNode::hello_node);
+
+    ClassDB::bind_method(D_METHOD("get_shred_ids"), &MyNode::get_shred_ids);
     ClassDB::bind_method(D_METHOD("add_shred", "filename"), &MyNode::add_shred);
+    ClassDB::bind_method(D_METHOD("remove_last_shred"), &MyNode::remove_last_shred);
+    ClassDB::bind_method(D_METHOD("remove_shred", "shredID"), &MyNode::remove_shred);
+    ClassDB::bind_method(D_METHOD("remove_all_shreds"), &MyNode::remove_all_shreds);
 };
 
 MyNode::MyNode()
@@ -54,10 +59,9 @@ MyNode::MyNode()
 	UtilityFunctions::print("Initiating Chuck...");
 
 	// instantiate a ChucK instance
-	// Uncommenting this next line is what seems to break the SharedLib
     the_chuck = new ChucK();
 
-        // set some parameters: sample rate
+    // set some parameters: sample rate
     the_chuck->setParam( CHUCK_PARAM_SAMPLE_RATE, 44100 );
     // number of input channels
     the_chuck->setParam( CHUCK_PARAM_INPUT_CHANNELS, 2 );
@@ -147,6 +151,21 @@ godot::String MyNode::hello_node()
 	return "Hello GDExtension Node\n";
 }
 
+godot::PackedInt32Array MyNode::get_shred_ids()
+{
+    PackedInt32Array packed_shred_ids;
+
+    cerr << "shredIDs: ";
+    for( t_CKUINT i = 0; i < shredIDs.size(); i++ )
+    {
+        cerr << shredIDs[i] << " ";
+        packed_shred_ids.append(shredIDs[i]);
+    }
+    cerr << endl;
+
+    return packed_shred_ids;
+}
+
 void MyNode::add_shred(godot::String filename)
 {
     string file = filename.utf8().get_data();
@@ -160,6 +179,59 @@ void MyNode::add_shred(godot::String filename)
     cerr << "adding shred '" << file << "' with ID: " << shredID  << endl;
     // push on stack
     shredIDs.push_back( shredID );
+}
+
+void MyNode::remove_last_shred()
+{
+    // if no shreds to remove
+    if( !shredIDs.size() )
+    {
+        cerr << "no shred to remove!" << endl;
+        return;
+    }
+    // create a message; VM will delete
+    Chuck_Msg * msg = new Chuck_Msg;
+    // message type
+    msg->type = CK_MSG_REMOVE;
+    // signify no value (will remove last)
+    msg->param = shredIDs.back();
+    // queue on VM
+    the_chuck->vm()->queue_msg( msg );
+    // print out the last VM shred id
+    cerr << "removing shred with ID: " << shredIDs.back() << endl;
+    // pop
+    shredIDs.pop_back();
+}
+
+void MyNode::remove_shred(int _shredID)
+{
+    // create a message; VM will delete
+    Chuck_Msg * msg = new Chuck_Msg;
+    // message type
+    msg->type = CK_MSG_REMOVE;
+    // which shredID to remove
+    msg->param = _shredID;
+    // queue on VM
+    the_chuck->vm()->queue_msg( msg );
+    // print out the last VM shred id
+    cerr << "removing shred with ID: " << _shredID << endl;
+}
+
+void MyNode::remove_all_shreds()
+{
+    // create a message; VM will delete
+    Chuck_Msg * msg = new Chuck_Msg;
+    // message type
+    msg->type = CK_MSG_REMOVEALL;
+    // queue on VM
+    the_chuck->vm()->queue_msg( msg );
+    // clear shredIDs
+    shredIDs.clear();
+    // reset shredID
+    shredID = 0;
+
+
+    cerr << "removing all shreds" << endl;
 }
 
 

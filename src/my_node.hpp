@@ -48,6 +48,10 @@ public:
 	godot::String hello_node();
 
 	void add_shred(godot::String content);
+	void remove_last_shred();
+	void remove_shred(int _shredID);
+	void remove_all_shreds();
+	godot::PackedInt32Array get_shred_ids();
 
 	// Setters and Getters
 	void set_audio_stream_player(AudioStreamPlayer* p_audio_stream_player) { audio_stream_player = p_audio_stream_player; };
