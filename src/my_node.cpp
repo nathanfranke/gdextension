@@ -178,13 +178,3 @@ void MyNode::cleanup_global_buffers()
     // reset
     g_bufferSize = 0;
 }
-
-// void MyNode::set_audio_stream_player(AudioStreamPlayer* p_audio_stream_player)
-// {
-//     audio_stream_player = p_audio_stream_player;
-// }
-
-// AudioStreamPlayer* MyNode::get_audio_stream_player()
-// {
-//     return audio_stream_player;
-// }
