@@ -16,7 +16,7 @@ env.Append(CPPPATH=["chuck/src/core/"])
 sources+= Glob("chuck/src/core/*.cpp")
 
 # Need c files in core as well as core/lo
-sources += Glob("chuck/src/core/*.c")
+sources += Glob("chuck/src/core/*.c", exclude=["chuck/src/core/chuck_yacc.c"])
 
 # Exclude server_thread.c to get around 'No threading implementation available' compile error on Windows. Unsure for other platforms.
 # For some reason server_thread.c isn't included in the Visual Studio solution, so the error doesn't happen when building Chuck directly.
