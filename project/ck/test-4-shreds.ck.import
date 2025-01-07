@@ -1,0 +1,14 @@
+[remap]
+
+importer="chodot.chuckfile"
+type="ChuckFile"
+uid="uid://c784nr7xwinbt"
+path="res://.godot/imported/test-4-shreds.ck-505ffb2625ca629fb47c52fc4ac49b88.tres"
+
+[deps]
+
+source_file="res://ck/test-4-shreds.ck"
+dest_files=["res://.godot/imported/test-4-shreds.ck-505ffb2625ca629fb47c52fc4ac49b88.tres"]
+
+[params]
+

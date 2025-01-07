@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://c7u64tpv6byvb"]
+[gd_scene load_steps=6 format=3 uid="uid://c7u64tpv6byvb"]
 
 [ext_resource type="Script" path="res://demo/test.gd" id="1_b04qc"]
 [ext_resource type="Resource" uid="uid://co0mr6v4ajtxn" path="res://ck/test-2-audio.ck" id="2_o20rc"]
 [ext_resource type="Script" path="res://addons/example/chuck_vm.gd" id="2_uvsjg"]
+[ext_resource type="Script" path="res://addons/chuck_importer/chuck_file.gd" id="3_7sgsd"]
 
 [sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_fjwav"]
 
@@ -19,4 +20,4 @@ stream = SubResource("AudioStreamGenerator_fjwav")
 [node name="ChuckVM" type="MyNode" parent="." node_paths=PackedStringArray("AudioStreamPlayer")]
 AudioStreamPlayer = NodePath("../AudioStreamPlayer")
 script = ExtResource("2_uvsjg")
-chuck_file = ExtResource("2_o20rc")
+chuck_files = Array[ExtResource("3_7sgsd")]([ExtResource("2_o20rc")])
