@@ -2,6 +2,7 @@
 
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/audio_stream_player.hpp>
+#include <godot_cpp/classes/resource.hpp>
 #include <chuck.h>
 
 using namespace godot;
@@ -24,6 +25,11 @@ private:
 	// Reference to godot audio stream player
 	AudioStreamPlayer* audio_stream_player = nullptr;
 
+	// shred id
+    t_CKUINT shredID = 0;
+    // our shred ID stack
+    vector<t_CKUINT> shredIDs;
+
 	// allocate global audio buffers
 	void alloc_global_buffers( t_CKINT bufferSize );
 	// de-allocate global audio buffers
@@ -41,6 +47,9 @@ public:
 
 	godot::String hello_node();
 
+	void add_shred(godot::String content);
+
+	// Setters and Getters
 	void set_audio_stream_player(AudioStreamPlayer* p_audio_stream_player) { audio_stream_player = p_audio_stream_player; };
 	AudioStreamPlayer* get_audio_stream_player() const { return audio_stream_player; };
 };

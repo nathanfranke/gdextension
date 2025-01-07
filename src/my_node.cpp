@@ -4,6 +4,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/classes/audio_stream_generator_playback.hpp>
 #include <chuck.h>
+#include <chuck_vm.h>
 #include <iostream>
 #include <streambuf>
 #include <string>
@@ -39,8 +40,8 @@ void MyNode::_bind_methods()
 	ClassDB::bind_method(D_METHOD("set_audio_stream_player", "p_audio_stream_player"), &MyNode::set_audio_stream_player);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "AudioStreamPlayer", PROPERTY_HINT_NODE_TYPE, "AudioStreamPlayer"), "set_audio_stream_player", "get_audio_stream_player");
 
-
 	ClassDB::bind_method(D_METHOD("hello_node"), &MyNode::hello_node);
+    ClassDB::bind_method(D_METHOD("add_shred", "filename"), &MyNode::add_shred);
 };
 
 MyNode::MyNode()
@@ -63,7 +64,7 @@ MyNode::MyNode()
     // number of output channels
     the_chuck->setParam( CHUCK_PARAM_OUTPUT_CHANNELS, 2 );
     // whether to halt the VM when there is no more shred running
-    the_chuck->setParam( CHUCK_PARAM_VM_HALT, TRUE );
+    the_chuck->setParam( CHUCK_PARAM_VM_HALT, FALSE );
     // set hint so internally can advise things like async data writes etc.
     the_chuck->setParam( CHUCK_PARAM_IS_REALTIME_AUDIO_HINT, FALSE );
     // turn on logging to see what ChucK is up to; higher == more info
@@ -95,20 +96,6 @@ void MyNode::_ready()
 {
     // start ChucK VM and synthesis engine
     the_chuck->start();
-
-    // compile some ChucK code from string (this can be called on-the-fly and repeatedly)
-    if( !the_chuck->compileCode( "repeat(10) { <<< \"hello ChucK! random integer:\", Math.random2(1,100) >>>; }", "", 1 ) )
-    {
-        // got error, baillng out...
-        exit( 1 );
-    }
-
-        // compile ChucK program from file (this can be called on-the-fly and repeatedly)
-    if( !the_chuck->compileFile( "ck/test-2-audio.ck", "", 1 ) )
-    {
-        // got error, baillng out...
-        exit( 1 );
-    }
 
     if (!the_chuck->vm_running()) {
         UtilityFunctions::print("ChucK VM not running.");
@@ -157,8 +144,22 @@ void MyNode::_process(double delta)
 
 godot::String MyNode::hello_node()
 {
-	UtilityFunctions::print("hello_node() function called.");
 	return "Hello GDExtension Node\n";
+}
+
+void MyNode::add_shred(godot::String filename)
+{
+    string file = filename.utf8().get_data();
+    // compile file; FALSE means deferred spork -- thread-safe since
+    // we are on a different thread as the audio thread that is calling
+    // the_chuck->run(...)
+    the_chuck->compileFile( file, "", 1, FALSE );
+    // get the id of the previously sporked shred
+    shredID = the_chuck->vm()->last_id();
+    // print out the last VM shred id (should be the shred we just compiled)
+    cerr << "adding shred '" << file << "' with ID: " << shredID  << endl;
+    // push on stack
+    shredIDs.push_back( shredID );
 }
 
 
