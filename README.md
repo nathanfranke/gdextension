@@ -1,60 +1,21 @@
-# gdextension
+# Chodot
+🚧 **This project is currently in _early_ development.** 🚧
 
-GDExtension template that automatically builds into a self-contained addon for the Godot Asset Library.
+Chodot is a Godot Engine extension that integrates the ChucK Language, enhancing your game development projects with powerful audio capabilities.
 
-### Getting started:
-1. Clone this repository (or a new repository with this template) with submodules.
-    - `git clone --recurse-submodules https://github.com/nathanfranke/gdextension.git`
-    - `cd gdextension`
-    - Alternatively, initialize submodules for an existing repository: `git submodule update --init --recursive`
-2. Update to the latest `godot-cpp`.
-    - `git submodule update --remote`
-2. Build a debug binary for the current platform.
-    - `scons`
-3. Import and run the test project using Godot Engine 4.3+.
-    - `godot --path project/ --import`
-    - `godot --path project/`
-    - Alternatively, use the editor: `godot --path project/ --editor`
-4. Check the Label on screen:
-   ```
-   Hello GDScript!
-   Hello GDExtension Node!
-   Hello GDExtension Singleton!
-   ```
+## Features (wishlist)
 
-### Repository structure:
-- `project/` - Godot project boilerplate.
-  - `addons/example/` - Files to be distributed to other projects.¹
-  - `demo/` - Scenes and scripts for internal testing. Not strictly necessary.
-- `src/` - Source code of this extension.
-- `godot-cpp/` - Submodule needed for GDExtension compilation.
+- Seamless integration with Godot Engine
+- Shred manipulation
+- Communication with ChucK VM with methods and signals
+- Routing ChucK audio output to multiple `AudioStreamPlayer` nodes
+- Routing `AudioStreamPlayer` audio output (including from microphone streams) to ChucK audio inputs
+- ChucK file creation, editing and syntax highlighting directly in Godot Editor.
 
-¹ Before distributing as an addon, all binaries for all platforms must be built and copied to the `bin/` directory. This is done automatically by GitHub Actions.
+## Contributing
 
-### Make it your own:
-1. Rename `project/addons/example/` and `project/addons/example/example.gdextension`.
-2. Replace `LICENSE`, `README.md`, and your code in `src/`.
-3. Not required, but consider leaving a note about this template if you found it helpful!
+We welcome contributions! Please join us in the #chodot chanel, in the [ChucK discord](https://discord.gg/Np5Z7ReesD) to chat about it.
 
-### Distributing your extension on the Godot Asset Library with GitHub Actions:
-1. If needed, go to Repository→Actions→Builds→Run workflow
-2. Go to Repository→Actions and download the latest artifact.
-3. Test the artifact by extracting the addon into a project.
-4. Create a new release on GitHub, uploading the artifact as an asset.
-5. On the asset, Right Click→Copy Link to get a direct file URL. Don't use the artifacts directly from GitHub Actions, as they expire.
-6. When submitting/updating on the Godot Asset Library, Change "Repository host" to `Custom` and "Download URL" to the one you copied.
+## License
 
-### Platform support
-
-| Status | Godot Version | Tested Platform |
-| ------ | ------------- | --------------- |
-| ✅ | 4.3 | Linux x86_64 (debug) |
-| ✅ | 4.3 | Linux x86_64 (release) |
-| ✅ | 4.3 | Windows x86_64 (debug) |
-| ✅ | 4.3 | Windows x86_64 (release) |
-| ✅ | 4.3 | Android arm64v8 (debug) |
-| ✅ | 4.3 | Android arm64v8 (release) |
-| ❌ | | MacOS (debug) |
-| ❌ | | MacOS (release) |
-| ❌ | | iOS (debug) |
-| ❌ | | iOS (release) |
+Haven't chosen one yet! Likely MIT.
