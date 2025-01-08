@@ -3,6 +3,7 @@ class_name ChuckVM extends MyNode
 @export var chuck_files: Array[ChuckFile]
 
 func _ready() -> void:
+	run_code("repeat(10) { <<< \"hello ChucK! random integer:\", Math.random2(1,100) >>>; }")
 	for file in chuck_files:
 		var path := ProjectSettings.globalize_path(file.resource_path)
 		add_shred(path)

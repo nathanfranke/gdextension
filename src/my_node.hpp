@@ -52,6 +52,7 @@ public:
 	godot::String hello_node();
 
 	// Shred Manipulation
+	void run_code(godot::String code);
 	void add_shred(godot::String content);
 	void remove_last_shred();
 	void remove_shred(int _shredID);
@@ -61,6 +62,8 @@ public:
 	// Globals
 	void print_all_globals();
 	void broadcast_global_event(String name);
+	//TODO: signal_globael_event
+	void set_global_float(String name, double value);
 
 	// Setters and Getters
 	void set_audio_stream_player(AudioStreamPlayer* p_audio_stream_player) { audio_stream_player = p_audio_stream_player; };

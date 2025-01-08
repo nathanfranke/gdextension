@@ -11,10 +11,10 @@
 
 using namespace godot;
 
-// Custom stream buffer to capture stderr
-class StderrRedirector : public std::streambuf {
+// Custom stream buffer to capture stderr and stdout
+class StreamRedirector : public std::streambuf {
 public:
-    StderrRedirector(std::streambuf *buf) : original_buf(buf) {}
+    StreamRedirector(std::streambuf *buf) : original_buf(buf) {}
     std::streambuf *original_buf;
     std::string buffer;
 
@@ -30,8 +30,10 @@ protected:
     }
 };
 
-StderrRedirector *stderr_redirector = nullptr;
+StreamRedirector *stderr_redirector = nullptr;
+StreamRedirector *stdout_redirector = nullptr;
 std::streambuf *original_stderr_buf = nullptr;
+std::streambuf *original_stdout_buf = nullptr;
 
 
 void MyNode::_bind_methods()
@@ -43,6 +45,7 @@ void MyNode::_bind_methods()
 	ClassDB::bind_method(D_METHOD("hello_node"), &MyNode::hello_node);
 
     ClassDB::bind_method(D_METHOD("get_shred_ids"), &MyNode::get_shred_ids);
+    ClassDB::bind_method(D_METHOD("run_code", "code"), &MyNode::run_code);
     ClassDB::bind_method(D_METHOD("add_shred", "filename"), &MyNode::add_shred);
     ClassDB::bind_method(D_METHOD("remove_last_shred"), &MyNode::remove_last_shred);
     ClassDB::bind_method(D_METHOD("remove_shred", "shredID"), &MyNode::remove_shred);
@@ -50,13 +53,17 @@ void MyNode::_bind_methods()
 
     ClassDB::bind_method(D_METHOD("print_all_globals"), &MyNode::print_all_globals);
     ClassDB::bind_method(D_METHOD("broadcast_global_event", "name"), &MyNode::broadcast_global_event);
+    ClassDB::bind_method(D_METHOD("set_global_float", "name", "value"), &MyNode::set_global_float);
 };
 
 MyNode::MyNode()
 {
     // Redirect stderr
-    original_stderr_buf = std::cerr.rdbuf();
-    stderr_redirector = new StderrRedirector(original_stderr_buf);
+    std::cerr.rdbuf(stderr_redirector);
+    original_stdout_buf = std::cout.rdbuf();
+    stdout_redirector = new StreamRedirector(original_stdout_buf);
+    std::cout.rdbuf(stdout_redirector);
+    stderr_redirector = new StreamRedirector(original_stderr_buf);
     std::cerr.rdbuf(stderr_redirector);
 
 	UtilityFunctions::print("Initiating Chuck...");
@@ -127,12 +134,6 @@ void MyNode::_process(double delta)
             // Get the number of frames available
             int nframes = std::min(p->get_frames_available(), 2048);
 
-            // Check if the ChucK VM is running
-            // if (!the_chuck->vm_running()) {
-            //     UtilityFunctions::print("ChucK VM not running.");
-            //     return;
-            // }
-
             // Fill buffers with audio data
             the_chuck->run(g_inputBuffer, g_outputBuffer, nframes);
             
@@ -173,13 +174,31 @@ godot::PackedInt32Array MyNode::get_shred_ids()
     return packed_shred_ids;
 }
 
+// TODO: Printout from <<< >>> is not captured by stderr redirector
+void MyNode::run_code(godot::String code)
+{
+    string content = code.utf8().get_data();
+    if (!the_chuck->compileCode( content, "", 1)) {
+        // got error, baillng out...
+        cerr << "cannot not compile code" << endl;
+        exit( 1 );
+    };
+    shredID = the_chuck->vm()->last_id();
+    cerr << "adding shred of compiled code with ID: " << shredID  << endl;
+    shredIDs.push_back( shredID );
+}
+
 void MyNode::add_shred(godot::String filename)
 {
     string file = filename.utf8().get_data();
     // compile file; FALSE means deferred spork -- thread-safe since
     // we are on a different thread as the audio thread that is calling
     // the_chuck->run(...)
-    the_chuck->compileFile( file, "", 1, FALSE );
+    if(!the_chuck->compileFile( file, "", 1, FALSE )) {
+        // got error, baillng out...
+        cerr << "cannot not compile file" << endl;
+        exit( 1 );
+    };
     // get the id of the previously sporked shred
     shredID = the_chuck->vm()->last_id();
     // print out the last VM shred id (should be the shred we just compiled)
@@ -262,6 +281,11 @@ void MyNode::all_globals_cb( const vector<Chuck_Globals_TypeValue> & list, void 
 void MyNode::broadcast_global_event(String name)
 {
     the_chuck->globals()->broadcastGlobalEvent( name.utf8().get_data() );
+}
+
+void MyNode::set_global_float(String name, double value)
+{
+    the_chuck->globals()->setGlobalFloat( name.utf8().get_data(), value );
 }
 
 //-----------------------------------------------------------------------------
