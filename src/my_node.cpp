@@ -11,6 +11,8 @@
 
 using namespace godot;
 
+std::unordered_map<std::string, MyNode*> MyNode::instance_map;
+
 // Custom stream buffer to capture stderr and stdout
 class StreamRedirector : public std::streambuf {
 public:
@@ -55,6 +57,8 @@ void MyNode::_bind_methods()
     ClassDB::bind_method(D_METHOD("broadcast_global_event", "name"), &MyNode::broadcast_global_event);
     ClassDB::bind_method(D_METHOD("set_global_float", "name", "value"), &MyNode::set_global_float);
     ClassDB::bind_method(D_METHOD("set_global_int", "name", "value"), &MyNode::set_global_int);
+
+    ADD_SIGNAL(MethodInfo("chuck_event", PropertyInfo(Variant::STRING, "event")));
 };
 
 MyNode::MyNode()
@@ -98,6 +102,15 @@ MyNode::~MyNode()
 {
     // deallocate
     cleanup_global_buffers();
+
+    // Clean up the instance_map
+    for (auto it = instance_map.begin(); it != instance_map.end(); ) {
+        if (it->second == this) {
+            it = instance_map.erase(it);
+        } else {
+            ++it;
+        }
+    }
     
     // clean up ChucK
     CK_SAFE_DELETE( the_chuck );
@@ -267,16 +280,48 @@ void MyNode::remove_all_shreds()
 
 void MyNode::print_all_globals()
 {
-    the_chuck->globals()->getAllGlobalVariables( all_globals_cb, NULL );
+    the_chuck->globals()->getAllGlobalVariables(all_globals_cb_static, this);
 }
 
-void MyNode::all_globals_cb( const vector<Chuck_Globals_TypeValue> & list, void * data )
+void MyNode::all_globals_cb_static(const vector<Chuck_Globals_TypeValue> &list, void *data)
+{
+    MyNode *self = static_cast<MyNode *>(data);
+    self->all_globals_cb(list);
+}
+
+void MyNode::all_globals_cb( const vector<Chuck_Globals_TypeValue> & list )
 {
     for( t_CKUINT i = 0; i < list.size(); i++ )
     {
         // print
         cerr << "    global variable: " << list[i].type << " " << list[i].name << endl;
+        
+        // if it's an event
+        if( list[i].type == "Event" )
+        {
+            // Register static callback with a map
+            instance_map[list[i].name] = this;
+            the_chuck->globals()->listenForGlobalEvent(
+                list[i].name.c_str(),
+                event_listener_cb_static,
+                TRUE
+            );
+        }
     }
+}
+
+void MyNode::event_listener_cb_static(const char* name)
+{
+    // Look up the instance and call the non-static method
+    if (instance_map.find(name) != instance_map.end()) {
+        instance_map[name]->event_listener_cb(name);
+    }
+}
+
+void MyNode::event_listener_cb(const char* name)
+{
+    cerr << "global event: " << name << endl;
+    emit_signal("chuck_event", String(name));
 }
 
 void MyNode::broadcast_global_event(String name)

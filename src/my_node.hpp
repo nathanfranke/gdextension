@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/audio_stream_player.hpp>
 #include <godot_cpp/classes/resource.hpp>
@@ -26,17 +27,24 @@ private:
 	// Reference to godot audio stream player
 	AudioStreamPlayer* audio_stream_player = nullptr;
 
+	static std::unordered_map<std::string, MyNode*> instance_map;
+
 	// shred id
     t_CKUINT shredID = 0;
     // our shred ID stack
     vector<t_CKUINT> shredIDs;
 
-	static void all_globals_cb( const vector<Chuck_Globals_TypeValue> & list, void * data );
+	// global event array
+	vector<string> global_events;
+
+	static void all_globals_cb_static(const vector<Chuck_Globals_TypeValue> &list, void *data);
+	void all_globals_cb( const vector<Chuck_Globals_TypeValue> & list);
 
 	// TODO: event_broadcast()
 	// It should listen for all events, and then send a signal
 	// Signal should have name of the event, and args if possible
-	//static void global_event_cb(const char* name);
+	static void event_listener_cb_static(const char* name);
+	void event_listener_cb(const char* name);
 
 	// allocate global audio buffers
 	void alloc_global_buffers( t_CKINT bufferSize );

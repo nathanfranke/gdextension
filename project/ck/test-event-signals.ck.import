@@ -1,0 +1,14 @@
+[remap]
+
+importer="chodot.chuckfile"
+type="ChuckFile"
+uid="uid://c8rffggvkrxas"
+path="res://.godot/imported/test-event-signals.ck-0db621b0a61d3104188ad7ced8175ea5.tres"
+
+[deps]
+
+source_file="res://ck/test-event-signals.ck"
+dest_files=["res://.godot/imported/test-event-signals.ck-0db621b0a61d3104188ad7ced8175ea5.tres"]
+
+[params]
+
