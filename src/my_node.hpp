@@ -36,7 +36,7 @@ private:
 	// TODO: event_broadcast()
 	// It should listen for all events, and then send a signal
 	// Signal should have name of the event, and args if possible
-
+	//static void global_event_cb(const char* name);
 
 	// allocate global audio buffers
 	void alloc_global_buffers( t_CKINT bufferSize );
