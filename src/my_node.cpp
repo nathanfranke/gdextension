@@ -47,6 +47,8 @@ void MyNode::_bind_methods()
     ClassDB::bind_method(D_METHOD("remove_last_shred"), &MyNode::remove_last_shred);
     ClassDB::bind_method(D_METHOD("remove_shred", "shredID"), &MyNode::remove_shred);
     ClassDB::bind_method(D_METHOD("remove_all_shreds"), &MyNode::remove_all_shreds);
+
+    ClassDB::bind_method(D_METHOD("print_all_globals"), &MyNode::print_all_globals);
 };
 
 MyNode::MyNode()
@@ -151,6 +153,10 @@ godot::String MyNode::hello_node()
 	return "Hello GDExtension Node\n";
 }
 
+//-----------------------------------------------------------------------------
+// Shred Manipulation
+//-----------------------------------------------------------------------------
+
 godot::PackedInt32Array MyNode::get_shred_ids()
 {
     PackedInt32Array packed_shred_ids;
@@ -234,6 +240,23 @@ void MyNode::remove_all_shreds()
     cerr << "removing all shreds" << endl;
 }
 
+//-----------------------------------------------------------------------------
+// Globals
+//-----------------------------------------------------------------------------
+
+void MyNode::print_all_globals()
+{
+    the_chuck->globals()->getAllGlobalVariables( all_globals_cb, NULL );
+}
+
+void MyNode::all_globals_cb( const vector<Chuck_Globals_TypeValue> & list, void * data )
+{
+    for( t_CKUINT i = 0; i < list.size(); i++ )
+    {
+        // print
+        cerr << "    global variable: " << list[i].type << " " << list[i].name << endl;
+    }
+}
 
 //-----------------------------------------------------------------------------
 // initialize global audio buffers

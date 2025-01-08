@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/audio_stream_player.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <chuck.h>
+#include <chuck_globals.h>
 
 using namespace godot;
 
@@ -30,6 +31,9 @@ private:
     // our shred ID stack
     vector<t_CKUINT> shredIDs;
 
+	static void all_globals_cb( const vector<Chuck_Globals_TypeValue> & list, void * data );
+
+
 	// allocate global audio buffers
 	void alloc_global_buffers( t_CKINT bufferSize );
 	// de-allocate global audio buffers
@@ -47,11 +51,15 @@ public:
 
 	godot::String hello_node();
 
+	// Shred Manipulation
 	void add_shred(godot::String content);
 	void remove_last_shred();
 	void remove_shred(int _shredID);
 	void remove_all_shreds();
 	godot::PackedInt32Array get_shred_ids();
+
+	// Globals
+	void print_all_globals();
 
 	// Setters and Getters
 	void set_audio_stream_player(AudioStreamPlayer* p_audio_stream_player) { audio_stream_player = p_audio_stream_player; };
