@@ -178,7 +178,7 @@ godot::PackedInt32Array MyNode::get_shred_ids()
 void MyNode::run_code(godot::String code)
 {
     string content = code.utf8().get_data();
-    if (!the_chuck->compileCode( content, "", 1)) {
+    if (!the_chuck->compileCode( content, "", 1, FALSE)) {
         // got error, baillng out...
         cerr << "cannot not compile code" << endl;
         exit( 1 );
