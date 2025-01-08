@@ -8,6 +8,7 @@ func _ready() -> void:
 		add_shred(path)
 	await get_tree().create_timer(2).timeout
 	print_all_globals()
-	await get_tree().create_timer(2).timeout
-	var ids = get_shred_ids()
+	for i in range(10):
+		broadcast_global_event("the_nextNote")
+		await get_tree().create_timer(0.5).timeout
 	remove_all_shreds()

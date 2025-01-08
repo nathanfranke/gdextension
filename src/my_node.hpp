@@ -60,6 +60,7 @@ public:
 
 	// Globals
 	void print_all_globals();
+	void broadcast_global_event(String name);
 
 	// Setters and Getters
 	void set_audio_stream_player(AudioStreamPlayer* p_audio_stream_player) { audio_stream_player = p_audio_stream_player; };

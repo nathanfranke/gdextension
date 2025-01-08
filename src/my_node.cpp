@@ -49,6 +49,7 @@ void MyNode::_bind_methods()
     ClassDB::bind_method(D_METHOD("remove_all_shreds"), &MyNode::remove_all_shreds);
 
     ClassDB::bind_method(D_METHOD("print_all_globals"), &MyNode::print_all_globals);
+    ClassDB::bind_method(D_METHOD("broadcast_global_event", "name"), &MyNode::broadcast_global_event);
 };
 
 MyNode::MyNode()
@@ -256,6 +257,11 @@ void MyNode::all_globals_cb( const vector<Chuck_Globals_TypeValue> & list, void 
         // print
         cerr << "    global variable: " << list[i].type << " " << list[i].name << endl;
     }
+}
+
+void MyNode::broadcast_global_event(String name)
+{
+    the_chuck->globals()->broadcastGlobalEvent( name.utf8().get_data() );
 }
 
 //-----------------------------------------------------------------------------
