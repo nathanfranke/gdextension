@@ -28,6 +28,7 @@ private:
 	AudioStreamPlayer* audio_stream_player = nullptr;
 
 	static std::unordered_map<std::string, MyNode*> instance_map;
+	std::vector<std::string> registered_events;
 
 	// shred id
     t_CKUINT shredID = 0;
@@ -72,7 +73,7 @@ public:
 	godot::PackedInt32Array get_shred_ids();
 
 	// Globals
-	void print_all_globals();
+	void register_global_events();
 	void broadcast_global_event(String name);
 	//TODO: signal_globael_event
 	void set_global_float(String name, double value);

@@ -53,7 +53,6 @@ void MyNode::_bind_methods()
     ClassDB::bind_method(D_METHOD("remove_shred", "shredID"), &MyNode::remove_shred);
     ClassDB::bind_method(D_METHOD("remove_all_shreds"), &MyNode::remove_all_shreds);
 
-    ClassDB::bind_method(D_METHOD("print_all_globals"), &MyNode::print_all_globals);
     ClassDB::bind_method(D_METHOD("broadcast_global_event", "name"), &MyNode::broadcast_global_event);
     ClassDB::bind_method(D_METHOD("set_global_float", "name", "value"), &MyNode::set_global_float);
     ClassDB::bind_method(D_METHOD("set_global_int", "name", "value"), &MyNode::set_global_int);
@@ -95,6 +94,9 @@ MyNode::MyNode()
     // initialize ChucK, after the parameters are set
     the_chuck->init();
 
+    // start ChucK VM and synthesis engine
+    the_chuck->start();
+
 	UtilityFunctions::print("Chuck Initiated.");
 }
 
@@ -122,9 +124,6 @@ MyNode::~MyNode()
 
 void MyNode::_ready()
 {
-    // start ChucK VM and synthesis engine
-    the_chuck->start();
-
     if (!the_chuck->vm_running()) {
         UtilityFunctions::print("ChucK VM not running.");
         return;
@@ -200,6 +199,13 @@ void MyNode::run_code(godot::String code)
     shredID = the_chuck->vm()->last_id();
     cerr << "adding shred of compiled code with ID: " << shredID  << endl;
     shredIDs.push_back( shredID );
+
+    // Register global events
+    if (the_chuck && the_chuck->vm_running()) {
+        register_global_events();
+    } else {
+        UtilityFunctions::print("ChucK VM is not running, cannot register global events.");
+    }
 }
 
 void MyNode::add_shred(godot::String filename)
@@ -219,6 +225,13 @@ void MyNode::add_shred(godot::String filename)
     cerr << "adding shred '" << file << "' with ID: " << shredID  << endl;
     // push on stack
     shredIDs.push_back( shredID );
+
+    // Register global events
+    if (the_chuck && the_chuck->vm_running()) {
+        register_global_events();
+    } else {
+        UtilityFunctions::print("ChucK VM is not running, cannot register global events.");
+    }
 }
 
 void MyNode::remove_last_shred()
@@ -278,7 +291,7 @@ void MyNode::remove_all_shreds()
 // Globals
 //-----------------------------------------------------------------------------
 
-void MyNode::print_all_globals()
+void MyNode::register_global_events()
 {
     the_chuck->globals()->getAllGlobalVariables(all_globals_cb_static, this);
 }
@@ -296,8 +309,8 @@ void MyNode::all_globals_cb( const vector<Chuck_Globals_TypeValue> & list )
         // print
         cerr << "    global variable: " << list[i].type << " " << list[i].name << endl;
         
-        // if it's an event
-        if( list[i].type == "Event" )
+        // check if event is already registered
+        if (list[i].type == "Event" && std::find(registered_events.begin(), registered_events.end(), list[i].name) == registered_events.end())
         {
             // Register static callback with a map
             instance_map[list[i].name] = this;
@@ -306,7 +319,20 @@ void MyNode::all_globals_cb( const vector<Chuck_Globals_TypeValue> & list )
                 event_listener_cb_static,
                 TRUE
             );
+            registered_events.push_back(list[i].name);
         }
+
+        // // if it's an event
+        // if( list[i].type == "Event" )
+        // {
+        //     // Register static callback with a map
+        //     instance_map[list[i].name] = this;
+        //     the_chuck->globals()->listenForGlobalEvent(
+        //         list[i].name.c_str(),
+        //         event_listener_cb_static,
+        //         TRUE
+        //     );
+        // }
     }
 }
 
