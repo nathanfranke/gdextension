@@ -3,11 +3,13 @@ global Event the_nextNote;
 // ChucK global int to get pitch index
 global float the_frequency;
 
+global float filter_freq;
+
 // patch
-Blit s => ADSR e => JCRev r => dac;
+Blit s => LPF filter => ADSR e => JCRev r => dac;
 .5 => s.gain;
 .05 => r.mix;
-
+2000.0 => filter_freq => filter.freq;
 // set adsr
 e.set( 5::ms, 3::ms, .5, 5::ms );
 
@@ -22,6 +24,7 @@ while( true )
         hi[Math.random2(0,hi.size()-1)] ) => s.freq;
     // copy to global
     s.freq() => the_frequency;
+    filter_freq => filter.freq;
 
     // harmonics
     Math.random2( 1, 5 ) => s.harmonics;

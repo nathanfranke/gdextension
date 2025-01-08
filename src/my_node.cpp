@@ -54,6 +54,7 @@ void MyNode::_bind_methods()
     ClassDB::bind_method(D_METHOD("print_all_globals"), &MyNode::print_all_globals);
     ClassDB::bind_method(D_METHOD("broadcast_global_event", "name"), &MyNode::broadcast_global_event);
     ClassDB::bind_method(D_METHOD("set_global_float", "name", "value"), &MyNode::set_global_float);
+    ClassDB::bind_method(D_METHOD("set_global_int", "name", "value"), &MyNode::set_global_int);
 };
 
 MyNode::MyNode()
@@ -286,6 +287,13 @@ void MyNode::broadcast_global_event(String name)
 void MyNode::set_global_float(String name, double value)
 {
     the_chuck->globals()->setGlobalFloat( name.utf8().get_data(), value );
+    cerr << "setting global float: " << name.utf8().get_data() << " to " << value << endl;
+}
+
+void MyNode::set_global_int(String name, int value)
+{
+    the_chuck->globals()->setGlobalInt( name.utf8().get_data(), value );
+    cerr << "setting global int: " << name.utf8().get_data() << " to " << value << endl;
 }
 
 //-----------------------------------------------------------------------------

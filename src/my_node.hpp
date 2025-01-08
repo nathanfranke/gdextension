@@ -33,6 +33,10 @@ private:
 
 	static void all_globals_cb( const vector<Chuck_Globals_TypeValue> & list, void * data );
 
+	// TODO: event_broadcast()
+	// It should listen for all events, and then send a signal
+	// Signal should have name of the event, and args if possible
+
 
 	// allocate global audio buffers
 	void alloc_global_buffers( t_CKINT bufferSize );
@@ -64,6 +68,7 @@ public:
 	void broadcast_global_event(String name);
 	//TODO: signal_globael_event
 	void set_global_float(String name, double value);
+	void set_global_int(String name, int value);
 
 	// Setters and Getters
 	void set_audio_stream_player(AudioStreamPlayer* p_audio_stream_player) { audio_stream_player = p_audio_stream_player; };
