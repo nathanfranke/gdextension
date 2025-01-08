@@ -321,18 +321,6 @@ void MyNode::all_globals_cb( const vector<Chuck_Globals_TypeValue> & list )
             );
             registered_events.push_back(list[i].name);
         }
-
-        // // if it's an event
-        // if( list[i].type == "Event" )
-        // {
-        //     // Register static callback with a map
-        //     instance_map[list[i].name] = this;
-        //     the_chuck->globals()->listenForGlobalEvent(
-        //         list[i].name.c_str(),
-        //         event_listener_cb_static,
-        //         TRUE
-        //     );
-        // }
     }
 }
 
