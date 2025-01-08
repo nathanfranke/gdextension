@@ -51,7 +51,7 @@ if not use_pregenerated_yacc_header:
 
     # Function to run flex
     def run_flex(target, source, env):
-        subprocess.run(['flex', '-Ichuck/src/core', '-ochuck.yy.c', 'chuck/src/core/chuck.lex'], check=True)
+        subprocess.run(['flex', '-o', 'chuck.yy.c', 'chuck/src/core/chuck.lex'], check=True)
 
     # Add custom builders for bison and flex
     bison_builder = Builder(action=run_bison)
